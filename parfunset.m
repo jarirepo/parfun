@@ -1,15 +1,34 @@
 classdef parfunset < handle
-% parfunset Representing a set of parameterized functions (parfun objects)
+% parfunset Represents a set of parameterized functions (parfun objects)
+% 
+% parfunset Properties
+%   x - discrete x-grid for the independent variable
+%   F - an array for the evaluated functions in columns
+%   pfcn - an array with PARFUN objects
+%   autodisp - flag set to 1 output intermediate results
+% 
+% parfunset Events
+%   Modified - whenever a parameter is changed
+% 
+% parfunset Methods
+%   update
+%   parfunset.handleValueChange
+
+% Version : 1.0
+% Date    : 2016-11-10
+% Author  : Jari Repo, University West, jari.repo@hv.se
+
     properties (SetAccess = private)
         x = [];
         F = [];
         pfcn = parfun.empty;   % an array of parfun objects
+        autodisp = 0;   % flag set to 1 to output intermediate results          
     end    
     events
         Modified
     end    
     methods
-        function obj = parfunset(x, pfdata)
+        function obj = parfunset(x, pfdata, autodisp)
             % pfdata - a cell array with function handle given as @(x)fun in
             % the first column and an parameter array containing parfun 
             % objects that are associated with the function.
@@ -79,12 +98,13 @@ classdef parfunset < handle
             % evtdata - FcnEvalData object with a reference hParam to the
             %           parameter that whas changed            
             obj.update(src.n, src.y);   % updates data array F            
-            p = evtdata.hParam;          
+            p = evtdata.hParam;
+            if obj.autodisp
             fprintf(1,'Parameter <%s> changed to %f in function %d\n', ...
                 p.name, p.value, src.n);
+            end
             % notify listeners about the change in one of the parameters
             notify(obj,'Modified');
         end        
-    end
-    
+    end    
 end

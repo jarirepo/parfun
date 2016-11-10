@@ -10,10 +10,16 @@ classdef parfun < handle
 %   hFcn    - handle to user-defined anonymous function (single-variable)
 %   params  - an array with references to pfparam objects
 % 
-% parfun Methods
-% 
 % parfun Events
 %   ValueChanged
+% 
+% parfun Methods
+%   update
+%   parfun.handleValueChange
+
+% Version : 1.0
+% Date    : 2016-11-10
+% Author  : Jari Repo, University West, jari.repo@hv.se
 
     properties (SetAccess = private)
         n = NaN;          % function number
@@ -47,13 +53,6 @@ classdef parfun < handle
                 end
             end
         end        
-        function y = evaluate(obj, x)
-            % function evaluation
-            % get updated parameter values
-            % par = pfparam.getArray( obj.params );
-            y = obj.hFcn(x);
-%             y = obj.hFcn(x, obj.params );
-        end
         function update(obj)
             obj.y = obj.hFcn(obj.x);
         end

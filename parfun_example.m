@@ -1,11 +1,30 @@
-function [P] = parfun_example()
+function [P,pfset] = parfun_example(autodisp)
 % parfun_example    Evaluation of parameterized function set
+% 
+% Gives a general framework (based on the OOP-capabilities in MATLAB) to 
+% define a set of parameterized functions. It allows an arbitrary number 
+% of user-specified parameters to be associated with any number of 
+% user-defined functions. The associated functions within the function set 
+% is automatically evaluated and the result array updated whenever a 
+% parameter value is changed. This is pretty much like changing a cell in 
+% MS Excel where we get an immediate response to the change in any of the 
+% input cells. The technique is demonstrated using a simple set  of 
+% parameterized functions.
+% 
+% Inputs
+%   autodisp - set to 1 to automatically display the evaluated function 
+%              array F, Default: 0
+%              If set to 1 you the array F is output for each of the 
+%              functions which are associated with the modified parameter
 % 
 % Outputs:
 % P - an array of PFPARAM objects
+% pfset - a PARFUNSET object representing the parameterized function set
 % 
 % Usage:
-%   P = parfun_example()
+%   Example with autodisp =0
+% 
+%   [P,pfset] = parfun_example(0)
 % 
 %   a = P(1).getHandle();
 %   b = P(2).getHandle();
@@ -14,12 +33,11 @@ function [P] = parfun_example()
 %   :
 % 
 %   Change parameter values can be done as follows:
-%   a(1.2)
-%   b(4.5)
-%   c(6.1)
-%   d(.5)
-%   :
-
+%   a(1.2), disp(pfset.F)
+%   b(4.5), disp(pfset.F)
+%   c(6.1), disp(pfset.F)
+%   d(.5),  disp(pfset.F)
+%   :    
 
 %{
     Conevntional evaluation of parameterized functions:
@@ -137,7 +155,10 @@ function [P] = parfun_example()
     Author  : Jari Repo, University West, jari.repo@hv.se
 %}    
     
-clc
+% check on the inputs
+if ~exist('autodisp')
+    autodisp = 1;
+end
 
 % 1. Define parameters in the P array and set them to some initial value
 P = [ pfparam('a',0), ...
@@ -183,6 +204,7 @@ pfdata = {  @(x)fcn1(x,paramSet{1}), paramSet{1}; ...
             @(x)fcn2(x,paramSet{2}), paramSet{2}; ...
             @(x)fcn3(x,paramSet{3}), paramSet{3}; ...
             @(x)fcn4(x,paramSet{4}), paramSet{4} ...
+};
 %}
 
 % 5. Create parameterized function set
@@ -191,11 +213,15 @@ x = (1 : 5)';
 pfset = parfunset(x, pfdata);
 
 % 6. Set callback to the PFSET 'Modified' event
-pfset.addlistener('Modified',@pfsetModified);
+if autodisp
+    pfset.addlistener('Modified',@pfsetModified);
+end
 
 % --- Output F with evaluated functions ---
-disp('Initial F(x)=')
-disp(pfset.F)
+if autodisp
+    disp('Initial F(x)=')
+    disp(pfset.F)
+end
 
 % --- Change of parameter values ---
 
@@ -224,8 +250,9 @@ end
 % anonymous functions.
 end
 
-function pfsetModified(obj, src, evtdata)
+function pfsetModified(obj, src, evtdata, varargin)
     % obj - parfunset object
+    varargin
     disp('F(x)=')
     disp(obj.F)
 end
