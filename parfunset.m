@@ -81,7 +81,13 @@ classdef parfunset < handle
                     % add listener to the 'ValueChanged' event of class parfun
                     addlistener(obj.pfcn(i),'ValueChanged',...
                         @(src,evt)parfunset.handleValueChange(obj,src,evt));                    
-                end                                
+                end
+            else
+                error('Input CFDATA must be a cell array')
+            end
+                        
+            if exist('autodisp') && isnumeric(autodisp)
+                obj.autodisp = autodisp;
             end
         end
         
@@ -98,7 +104,7 @@ classdef parfunset < handle
             % evtdata - FcnEvalData object with a reference hParam to the
             %           parameter that whas changed            
             obj.update(src.n, src.y);   % updates data array F            
-            p = evtdata.hParam;
+            p = evtdata.hParam;            
             if obj.autodisp
             fprintf(1,'Parameter <%s> changed to %f in function %d\n', ...
                 p.name, p.value, src.n);

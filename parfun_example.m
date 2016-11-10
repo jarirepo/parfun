@@ -210,7 +210,7 @@ pfdata = {  @(x)fcn1(x,paramSet{1}), paramSet{1}; ...
 % 5. Create parameterized function set
 % create a column vector for the independent variable (x)
 x = (1 : 5)';
-pfset = parfunset(x, pfdata);
+pfset = parfunset(x, pfdata, autodisp);
 
 % 6. Set callback to the PFSET 'Modified' event
 if autodisp
@@ -252,7 +252,7 @@ end
 
 function pfsetModified(obj, src, evtdata, varargin)
     % obj - parfunset object
-    varargin
+%     varargin
     disp('F(x)=')
     disp(obj.F)
 end
