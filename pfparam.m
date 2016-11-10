@@ -66,5 +66,5 @@ classdef pfparam < handle
                 error('Numeric and single-element input VAL is required')
             end
         end
-    end   
+    end
 end

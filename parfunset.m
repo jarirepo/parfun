@@ -73,8 +73,7 @@ classdef parfunset < handle
                     params = pfdata{i,2};         
                     
                     % create parfun object for this function
-                    obj.pfcn(i) = parfun(i,x,hFcn,params);                      
-                    
+                    obj.pfcn(i) = parfun(i,x,hFcn,params);                    
                     % write function values into F
                     obj.F(:,i) = obj.pfcn(i).y;
                     
