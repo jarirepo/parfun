@@ -8,10 +8,10 @@ This is pretty much like changing a cell in MS Excel where we get an immediate r
 
 The technique is demonstrated using the following simple set of parameterized functions.
 
-y1 = f1(x) = a*x + b*x
-y2 = f2(x) = a/2*x - 2*d*x
-y3 = f3(x) = a/2*x - 2*c*x + (b/5)*x.^2
-y2 = f4(x) = -3*c*x + d/2
+y1 = f1(x) = ax + bx
+y2 = f2(x) = ax/2 - 2dx
+y3 = f3(x) = ax/2 - 2cx + (b/5)x^2
+y2 = f4(x) = -3cx + d/2
 
 where x is the independent variable and {a,b,c,d} are adjustable numerical parameters. 
 The functions are evaluated for x and stored in an array F as:
