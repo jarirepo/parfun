@@ -20,13 +20,17 @@ classdef pfparam < handle
     properties (SetAccess = private)
         name;
     end
+    properties (SetAccess = public)
+        units;
+        descr;
+    end
     methods
         function obj = pfparam(varargin)
-            if nargin>0
+            if nargin>1
                 if ischar(varargin{1}) && length(varargin{1})>0
                     obj.name = varargin{1};
                 else
-                    error('Input NAME must be specified')
+                    error('Input NAME must contain characters')
                 end
                 if isnumeric(varargin{2})
                     obj.value = varargin{2};
@@ -34,7 +38,7 @@ classdef pfparam < handle
                     error('Input VALUE must be numeric')
                 end
             else
-                error('Parameter name and value are required')
+                error('Input NAME and VALUE are required')
             end
         end
         function set.value(obj, val)
@@ -47,6 +51,12 @@ classdef pfparam < handle
         end
         function val = get.value(obj)
             val = obj.value;
+        end
+        function set.units(obj, val)
+            obj.units = val;
+        end
+        function set.descr(obj, val)
+            obj.descr = val;
         end
         function h = getHandle(obj)            
             % return a function_handle, like a "function parameter"

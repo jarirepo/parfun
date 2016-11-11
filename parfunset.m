@@ -18,9 +18,10 @@ classdef parfunset < handle
 % Date    : 2016-11-10
 % Author  : Jari Repo, University West, jari.repo@hv.se
 
-    properties (SetAccess = private)
+    properties (SetAccess = protected)
         x = [];
         F = [];
+        P = pfparam.empty;     % array with PFPARAM objects (for external use)
         pfcn = parfun.empty;   % an array of parfun objects
         autodisp = 0;   % flag set to 1 to output intermediate results          
     end    
@@ -72,8 +73,18 @@ classdef parfunset < handle
                     hFcn = pfdata{i,1};    
                     params = pfdata{i,2};         
                     
+                    % retrieve the PFPARAM objects from PFDATA
+                    % (Only those parameters used in the equations will be
+                    % included)
+                    for j=1:length(params)
+                        if isempty(findobj(obj.P,'name',params(j).name))
+                            obj.P = [obj.P, params(j)];
+                        end
+                    end
+                    
                     % create parfun object for this function
-                    obj.pfcn(i) = parfun(i,x,hFcn,params);                    
+                    obj.pfcn(i) = parfun(i,x,hFcn,params);
+                    
                     % write function values into F
                     obj.F(:,i) = obj.pfcn(i).y;
                     
@@ -82,11 +93,11 @@ classdef parfunset < handle
                         @(src,evt)parfunset.handleValueChange(obj,src,evt));                    
                 end
             else
-                error('Input CFDATA must be a cell array')
+                error('Input PFDATA must be a cell array')
             end
                         
             if exist('autodisp') && isnumeric(autodisp)
-                obj.autodisp = autodisp;
+                obj.autodisp = autodisp;            
             end
         end
         
