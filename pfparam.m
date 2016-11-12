@@ -4,6 +4,8 @@ classdef pfparam < handle
 % pfparam Properties
 %   name - parameter name
 %   value - parameter value
+%   description - short parameter description (optional)
+%   unit - parameter unit (optional)
 % 
 % pfparam Methods
 %   getHandle - returns a function handle to allow changing the parameter
@@ -15,19 +17,18 @@ classdef pfparam < handle
 % Author  : Jari Repo, University West, jari.repo@hv.se
 
     properties (SetObservable, AbortSet = true)
-        value;
+        value = NaN;
     end
     properties (SetAccess = private)
-        name;
-    end
-    properties (SetAccess = public)
-        units;
-        descr;
+        name = '';
+        description = '';
+        unit = '';
     end
     methods
         function obj = pfparam(varargin)
-            if nargin>1
-                if ischar(varargin{1}) && length(varargin{1})>0
+            % Input: name, value [, description, unit]
+            if nargin>1                
+                if ischar(varargin{1}) && ~isempty(varargin{1})
                     obj.name = varargin{1};
                 else
                     error('Input NAME must contain characters')
@@ -36,6 +37,21 @@ classdef pfparam < handle
                     obj.value = varargin{2};
                 else
                     error('Input VALUE must be numeric')
+                end
+                % check on description and unit
+                if nargin>2
+                    if ischar(varargin{3})
+                        obj.description = varargin{3};
+                    else
+                        error('Input DESCRIPTION must be a ''char''')
+                    end
+                end
+                if nargin>3
+                    if ischar(varargin{4})
+                        obj.unit = varargin{4};
+                    else
+                        error('Input UNIT must be a ''char''')
+                    end
                 end
             else
                 error('Input NAME and VALUE are required')
@@ -49,14 +65,24 @@ classdef pfparam < handle
                 error('Numeric and single-element input VAL is required')
             end
         end
-        function val = get.value(obj)
+        function val = get.value(obj)         
             val = obj.value;
         end
-        function set.units(obj, val)
-            obj.units = val;
+        function set.name(obj, val)   
+            % sets parameter name
+            val = strtrim(val);
+            res = regexp(val,'^[_a-zA-Z]+\w*','match','once');
+            if ~isempty(res)
+                obj.name = val;
+            else
+                error('Invalid name')
+            end
         end
-        function set.descr(obj, val)
-            obj.descr = val;
+        function set.description(obj, val)
+            obj.description= strtrim(val);
+        end
+        function set.unit(obj, val)
+            obj.unit = strtrim(val);
         end
         function h = getHandle(obj)            
             % return a function_handle, like a "function parameter"
