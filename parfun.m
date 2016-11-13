@@ -24,7 +24,7 @@ classdef parfun < handle
     properties (SetAccess = private)
         n = NaN;          % function number
         x = []; 
-        y = [];             % evaluate function
+        y = [];             % evaluated function
         hFcn = function_handle.empty;
         params = pfparam.empty;
     end        
